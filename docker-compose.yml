@@ -19,6 +19,7 @@ services:
       - ./requirements.txt:/requirements.txt
     environment:
       - JUPYTER_TOKEN=nvidia
+      - NGC_API_KEY=$NGC_API_KEY
     entrypoint: /entrypoint.sh
     networks:
       - gtc25_kgrag_dli
