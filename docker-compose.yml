@@ -12,12 +12,11 @@ services:
       - gtc25_kgrag_dli
 
   jupyter:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: nvcr.io/nvidia/ai-workbench/python-cuda120:1.0.3
     volumes:
       - ./notebooks:/workspace/notebooks
       - ./entrypoint.sh:/entrypoint.sh
+      - ./requirements.txt:/requirements.txt
     environment:
       - JUPYTER_TOKEN=nvidia
     entrypoint: /entrypoint.sh
@@ -30,6 +29,12 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
+    command: >
+      bash -c "apt-get update && apt-get install -y --no-install-recommends 
+      build-essential curl wget &&
+      apt-get clean && rm -rf /var/lib/apt/lists/* &&
+      pip install --no-cache-dir -r /requirements.txt &&
+      chmod +x /entrypoint.sh && /entrypoint.sh"
 
   nim:
     image: nvcr.io/nvidia/nemo-inference-microservice:23.12
